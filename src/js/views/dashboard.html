@@ -1,0 +1,58 @@
+<!--
+ Copyright (c) 2014, 2021, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+  <h1>Dashboard Content Area</h1>
+  <div>
+      <div class="demo-list-container">
+          <oj-list-view
+                  id="listview"
+                  aria-label="Card list view"
+                  data="[[dataProvider]]"
+                  display="card"
+                  scroll-policy-options.fetch-size="10"
+                  class="demo-list">
+
+              <template slot="itemTemplate" data-oj-as="item">
+                  <li class="demo-card">
+                      <oj-action-card>
+
+                          <img data-bind="attr: { src: item.data.thumbnails[0].imageBase64 }"
+                               alt="Profile image"
+                               class="profile-img" />
+
+                          <!-- Botón quitar (-) -->
+                          <oj-button class="circle-btn left remove-btn"
+                                     chroming="solid"
+                                     data-bind="click: function() { $parent.removeFromCart(item.data) }">
+                              -
+                          </oj-button>
+
+                          <!-- Botón agregar (+) -->
+                          <oj-button class="circle-btn right add-btn"
+                                     data-bind="click: function() { $parent.addToCart(item.data) }">
+                              +
+                          </oj-button>
+
+                          <span class="oj-badge oj-badge-warning oj-badge-subtle badge-qty">0</span>
+
+                          <div class="card-content">
+                              <div class="price">
+                                  <oj-bind-text value="[[formatCLP(item.data.prices[0].total)]]"></oj-bind-text>
+                              </div>
+
+                              <div class="name">
+                                  <oj-bind-text value="[[item.data.name]]"></oj-bind-text>
+                              </div>
+                          </div>
+
+                      </oj-action-card>
+                  </li>
+              </template>
+
+          </oj-list-view>
+      </div>
+  </div>
+</div>
