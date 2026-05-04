@@ -110,6 +110,21 @@
                   </oj-menu>
                 </oj-menu-button>
               </oj-toolbar>
+                <div class="oj-flex oj-sm-flex-items-initial oj-sm-justify-content-flex-end">
+                    <div class="oj-flex-item oj-sm-padding-2x-horizontal">
+                        <div class="cart-icon-wrapper">
+                            <oj-button chroming="solid"
+                                       on-oj-action="[[openCartDrawer]]"
+                                       title="Carrito">
+                                <span slot="startIcon" class="oj-ux-ico-cart"></span>
+                            </oj-button>
+                            <!-- BADGE -->
+                            <div class="cart-badge"
+                                 data-bind="text: store.cartItems().length, visible: store.cartItems().length > 0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
           </div>
           <div role="navigation" class="oj-web-applayout-max-width oj-web-applayout-navbar">
@@ -122,6 +137,9 @@
           </div>
         </header>
         <oj-module role="main" class="oj-web-applayout-max-width oj-web-applayout-content" config="[[moduleAdapter.koObservableConfig]]">
+            <!-- Messages -->
+            <oj-messages messages="[[messagesDataprovider]]" position='{"my":"end bottom","at":"end bottom"}' display="notification">
+            </oj-messages>
         </oj-module>
         <footer class="oj-web-applayout-footer" role="contentinfo">
           <div class="oj-web-applayout-footer-item oj-web-applayout-max-width">

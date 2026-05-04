@@ -32,7 +32,8 @@
 
                           <!-- Botón agregar (+) -->
                           <oj-button class="circle-btn right add-btn"
-                                     data-bind="click: function() { $parent.addToCart(item.data) }">
+                                     chroming="solid"
+                                     on-oj-action="[[function() { addToCart(item.data); }]]">
                               +
                           </oj-button>
 
@@ -55,4 +56,9 @@
           </oj-list-view>
       </div>
   </div>
+    <div data-bind="ojModule: {
+    name: 'cart',
+    params: {
+    store: store
+    }}"></div>
 </div>

@@ -10,27 +10,32 @@ define([
     function DashboardViewModel() {
         var self = this;
 
-        self.baseUrl = ko.dataFor(document.getElementById('globalBody')).catalogServiceBaseUrl() + "products";
+        const app = ko.dataFor(document.getElementById('globalBody'));
+        self.store = app.store;
+
+        self.baseUrl = app.catalogServiceBaseUrl() + "products";
+
+        // ---------- Add to cart (UNICO) ----------
+        self.addToCart = function(product) {
+            self.store.addToCart(product);
+        };
 
         // ---------- Model ----------
-        const StudentModel = ojmodel.Model.extend({
+        const ProductModel = ojmodel.Model.extend({
             idAttribute: 'id'
         });
 
-        // ---------- Collection ----------
-        const StudentCollection = ojmodel.Collection.extend({
-            model: StudentModel,
+        const ProductCollection = ojmodel.Collection.extend({
+            model: ProductModel,
             fetchSize: 10,
 
-            // 🔹 1. parse (response → items)
             parse: function(response) {
                 return response.items;
             }
         });
 
-        const collection = new StudentCollection();
+        const collection = new ProductCollection();
 
-        // 🔹 2. customPagingOptions (CRÍTICO)
         collection.customPagingOptions = function(response) {
             return {
                 totalResults: response.totalResults,
@@ -38,16 +43,11 @@ define([
             };
         };
 
-        // 🔹 3. customURL (paging real)
         collection.customURL = function(operation, collection, options) {
 
             const page = options.startIndex > 0
                 ? (options.startIndex / options.fetchSize)
                 : 0;
-
-            console.log("startIndex:", options.startIndex,
-                "fetchSize:", options.fetchSize,
-                "page:", Math.floor(options.startIndex / options.fetchSize));
 
             return {
                 url: self.baseUrl,
@@ -60,7 +60,6 @@ define([
             };
         };
 
-        // ---------- DataProvider ----------
         self.dataProvider = new CollectionDataProvider(collection, {
             idAttribute: 'sku'
         });
@@ -75,13 +74,8 @@ define([
         };
 
         self.removeFromCart = function (product) {
-            let index = self.cart().findIndex(p => p.id === product.id);
-
-            if (index > -1) {
-                self.cart.splice(index, 1);
-            }
+            self.store.cartItems.remove(product);
         };
-
     }
 
     return DashboardViewModel;

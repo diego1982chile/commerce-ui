@@ -1,0 +1,96 @@
+<oj-drawer-popup opened="{{store.cartDrawerOpen}}" edge="end"  style="width:380px; max-width:380px; min-width:360px; flex:0 0 360px;">
+    <div class="demo-drawer-end">
+
+        <div class="demo-drawer-header">
+            <h6>Cart</h6>
+
+            <oj-button display="icons"
+                       chroming="borderless"
+                       on-oj-action="[[endToggle]]">
+                <span slot="startIcon" class="oj-ux-ico-close"></span>
+                Close
+            </oj-button>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <oj-bind-if test="[[store.cartItems().length === 0]]">
+            <p>Tu carrito está vacío</p>
+        </oj-bind-if>
+
+        <!-- LIST -->
+        <oj-bind-if test="[[store.cartItems().length > 0]]">
+            <div class="oj-flex-item oj-sm-flex-1" style="min-width: 100%;">
+                <oj-list-view
+                        id="listview"
+                        aria-label="cart list"
+                        data="[[cartDataProvider]]"
+                        class="oj-listview-item-padding-off oj-listview-full-width cart-mobile">
+                    <template slot="itemTemplate" data-oj-as="item">
+                        <oj-list-item-layout>
+                            <!-- HEADER: imagen + nombre -->
+                            <oj-avatar slot="leading"
+                                       size="xs"
+                                       src="[[item.data.thumbnails && item.data.thumbnails[0] ? item.data.thumbnails[0].imageBase64 : '']]">
+                            </oj-avatar>
+                            <span class="oj-typography-body-md oj-text-color-primary">
+                                <oj-bind-text value="[[item.data.name]]"></oj-bind-text>
+                            </span>
+                            <!-- BODY: precios -->
+                            <div style="display:flex; justify-content:space-between; width:100%; margin-top:4px;">
+                            <span class="oj-typography-body-sm oj-text-color-secondary">
+                                <oj-bind-text value="[[formatCLP(item.data.prices[0].total)]]"></oj-bind-text>
+                            </span>
+                            <span class="oj-typography-body-sm oj-text-color-primary">
+                                <oj-bind-text value="[[formatCLP(item.data.prices[0].total * (item.data.qty || 1))]]"></oj-bind-text>
+                            </span>
+                            </div>
+                            <oj-bind-if test="[[isMediumOrUp]]">
+                                <!-- FOOTER: controls -->
+                                <div slot="trailing" style="display:flex; align-items:center; justify-content:space-between; width:100%; margin-top:6px;">
+                                    <!-- qty controls -->
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <oj-button on-oj-action="[[function() { removeFromCart(item.data); }]]">-</oj-button>
+                                        <span data-bind="text: item.data.qty"></span>
+                                        <oj-button on-oj-action="[[function() { addToCart(item.data); }]]">+</oj-button>
+                                    </div>
+                                    <!-- delete -->
+                                    <oj-button chroming="borderless"
+                                               display="icons"
+                                               on-oj-action="[[function() { removeFromCart(item.data); }]]">
+                                        <span slot="startIcon" class="oj-ux-ico-trash"></span>
+                                    </oj-button>
+                                </div>
+                            </oj-bind-if>
+                            <oj-bind-if test="[[isSmall]]">
+                                <!-- FOOTER: controls -->
+                                <div slot="trailing" style="display:flex; align-items:center; justify-content:space-between; width:100%; margin-top:6px;">
+                                    <!-- qty controls -->
+                                    <div style="width:32px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                        <oj-button style="width:28px; height:24px;" on-oj-action="[[function() { addToCart(item.data); }]]">+</oj-button>
+                                        <span style="font-size:12px; line-height:16px;" data-bind="text: item.data.qty"></span>
+                                        <oj-button style="width:28px; height:24px;" on-oj-action="[[function() { removeFromCart(item.data); }]]">-</oj-button>
+                                    </div>
+                                    <!-- delete -->
+                                    <oj-button chroming="borderless"
+                                               display="icons"
+                                               on-oj-action="[[function() { removeFromCart(item.data); }]]">
+                                        <span slot="startIcon" class="oj-ux-ico-trash"></span>
+                                    </oj-button>
+                                </div>
+                            </oj-bind-if>
+                        </oj-list-item-layout>
+                    </template>
+                </oj-list-view>
+                <!-- TOTAL -->
+                <div style="display:flex; justify-content:space-between; padding:12px; border-top:1px solid #ddd; margin-top:8px; position:sticky; bottom:0; background:white;">
+                    <span class="oj-typography-body-md oj-text-color-primary">
+                        Total
+                    </span>
+                    <span class="oj-typography-body-md oj-text-color-primary">
+                        <oj-bind-text value="[[formatCLP(store.cartTotal())]]"></oj-bind-text>
+                    </span>
+                </div>
+            </div>
+        </oj-bind-if>
+    </div>
+</oj-drawer-popup>

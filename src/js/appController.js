@@ -8,8 +8,9 @@
 /*
  * Your application specific code will go here
  */
-define(['knockout', 'ojs/ojcontext', 'ojs/ojmodule-element-utils', 'ojs/ojknockouttemplateutils', 'ojs/ojcorerouter', 'ojs/ojmodulerouter-adapter', 'ojs/ojknockoutrouteradapter', 'ojs/ojurlparamadapter', 'ojs/ojresponsiveutils', 'ojs/ojresponsiveknockoututils', 'ojs/ojarraydataprovider',
-        'ojs/ojoffcanvas', 'ojs/ojmodule-element', 'ojs/ojknockout'],
+define(['knockout', 'ojs/ojcontext', 'ojs/ojmodule-element-utils', 'ojs/ojknockouttemplateutils', 'ojs/ojcorerouter', 'ojs/ojmodulerouter-adapter',
+        'ojs/ojknockoutrouteradapter', 'ojs/ojurlparamadapter', 'ojs/ojresponsiveutils', 'ojs/ojresponsiveknockoututils', 'ojs/ojarraydataprovider',
+        'ojs/ojoffcanvas', 'ojs/ojmodule-element', 'ojs/ojknockout', 'ojs/ojmessages'],
   function(ko, Context, moduleUtils, KnockoutTemplateUtils, CoreRouter, ModuleRouterAdapter, KnockoutRouterAdapter, UrlParamAdapter, ResponsiveUtils, ResponsiveKnockoutUtils, ArrayDataProvider, OffcanvasUtils) {
 
      function ControllerViewModel() {
@@ -42,6 +43,56 @@ define(['knockout', 'ojs/ojcontext', 'ojs/ojmodule-element-utils', 'ojs/ojknocko
       ];
 
      this.catalogServiceBaseUrl = ko.observable("http://localhost:9092/catalog-service/api/");
+
+     this.messages = ko.observableArray();
+
+     this.messagesDataprovider = new ArrayDataProvider(this.messages);
+
+     this.store = {
+         cartItems: ko.observableArray([]),
+         cartDrawerOpen: ko.observable(false)
+     };
+
+     this.store.addToCart = (product) => {
+         const existing = this.store.cartItems().find(p => p.sku === product.sku);
+
+         if (existing) {
+             existing.qty = (existing.qty || 1) + 1;
+             this.store.cartItems.splice(this.store.cartItems.indexOf(existing), 1, existing);
+         } else {
+             this.store.cartItems.push({ ...product, qty: 1 });
+         }
+         this.messages([{severity: 'info', summary: 'Info', detail: "Product '" + product.name + "' has been added to the cart", autoTimeout: 5000}]);
+     };
+
+     this.store.removeFromCart = (product) => {
+         const item = this.store.cartItems().find(p => p.sku === product.sku);
+         if (!item) return;
+
+         item.qty--;
+
+         if (item.qty <= 0) {
+             this.store.cartItems.remove(item);
+         } else {
+             this.store.cartItems.splice(
+                 this.store.cartItems.indexOf(item),
+                 1,
+                 item
+             );
+         }
+         this.messages([{severity: 'info', summary: 'Info', detail: "Product '" + product.name + "' has been removed from the cart", autoTimeout: 5000}]);
+     };
+
+     this.store.cartTotal = ko.computed(() => {
+         return this.store.cartItems().reduce((sum, item) => {
+             const qty = item.qty || 1;
+             const price = item.prices?.[0]?.total || 0;
+             return sum + (price * qty);
+         }, 0);
+     });
+
+     this.openCartDrawer = () => this.store.cartDrawerOpen(true);
+     this.closeCartDrawer = () => this.store.cartDrawerOpen(false);
 
       // Router setup
       let router = new CoreRouter(navData, {
@@ -88,6 +139,7 @@ define(['knockout', 'ojs/ojcontext', 'ojs/ojmodule-element-utils', 'ojs/ojknocko
      }
      // release the application bootstrap busy state
      Context.getPageContext().getBusyContext().applicationBootstrapComplete();
+
 
      return new ControllerViewModel();
   }
