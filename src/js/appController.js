@@ -53,7 +53,24 @@ define(['knockout', 'ojs/ojcontext', 'ojs/ojmodule-element-utils', 'ojs/ojknocko
          cartDrawerOpen: ko.observable(false)
      };
 
+     this.store.cartSkuSet = ko.computed(() => {
+         var set = {};
+         this.store.cartItems().forEach(item => { set[item.sku] = true; });
+         return set;
+     });
+
+     this.store.cartQty = ko.computed(() => {
+         return this.store.cartItems().reduce((sum, item) => sum + (item.qty || 1), 0);
+     });
+
+     this.store.cartQtyMap = ko.computed(() => {
+         var map = {};
+         this.store.cartItems().forEach(item => { map[item.sku] = item.qty || 1; });
+         return map;
+     });
+
      this.store.addToCart = (product) => {
+         console.log("this.store.addToCart");
          const existing = this.store.cartItems().find(p => p.sku === product.sku);
 
          if (existing) {
@@ -93,6 +110,11 @@ define(['knockout', 'ojs/ojcontext', 'ojs/ojmodule-element-utils', 'ojs/ojknocko
 
      this.openCartDrawer = () => this.store.cartDrawerOpen(true);
      this.closeCartDrawer = () => this.store.cartDrawerOpen(false);
+
+     this.formatCLP = (value) => {
+         if (!value) return '';
+         return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0 }).format(value);
+     };
 
       // Router setup
       let router = new CoreRouter(navData, {

@@ -12,32 +12,40 @@
                   aria-label="Card list view"
                   data="[[dataProvider]]"
                   display="card"
+                  scroll-policy="loadMoreOnScroll"
                   scroll-policy-options.fetch-size="10"
+                  scroll-policy-options.scroll-debounce-threshold="50"
                   class="demo-list">
 
               <template slot="itemTemplate" data-oj-as="item">
                   <li class="demo-card">
                       <oj-action-card>
 
+                          <div class="card-img-wrapper">
                           <img data-bind="attr: { src: item.data.thumbnails[0].imageBase64 }"
                                alt="Profile image"
                                class="profile-img" />
 
-                          <!-- Botón quitar (-) -->
-                          <oj-button class="circle-btn left remove-btn"
-                                     chroming="solid"
-                                     data-bind="click: function() { $parent.removeFromCart(item.data) }">
-                              -
-                          </oj-button>
+                          <div class="card-btn-overlay" data-bind="visible: !store.cartSkuSet()[item.data.sku]">
+                              <oj-button on-oj-action="[[() => store.addToCart(item.data)]]">
+                                  Agregar
+                              </oj-button>
+                          </div>
 
-                          <!-- Botón agregar (+) -->
-                          <oj-button class="circle-btn right add-btn"
-                                     chroming="solid"
-                                     on-oj-action="[[function() { addToCart(item.data); }]]">
-                              +
-                          </oj-button>
+                          <div class="card-btn-overlay" data-bind="visible: !!store.cartSkuSet()[item.data.sku]">
 
-                          <span class="oj-badge oj-badge-warning oj-badge-subtle badge-qty">0</span>
+                              <oj-button on-oj-action="[[() => store.removeFromCart(item.data)]]">
+                                  -
+                              </oj-button>
+
+                              <span class="oj-badge" data-bind="text: store.cartQtyMap()[item.data.sku]"></span>
+
+                              <oj-button on-oj-action="[[() => store.addToCart(item.data)]]">
+                                  +
+                              </oj-button>
+
+                          </div>
+                          </div>
 
                           <div class="card-content">
                               <div class="price">

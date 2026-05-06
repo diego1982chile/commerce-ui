@@ -303,6 +303,7 @@ html[dir="rtl"] .demo-oracle-icon {
     flex-shrink: 0 !important;
 }
 
+
 .cart-icon-wrapper {
     position: relative;
     display: inline-block;
@@ -327,4 +328,81 @@ html[dir="rtl"] .demo-oracle-icon {
 
     padding: 0 4px;
     font-weight: bold;
+}
+
+.card-img-wrapper {
+  position: relative;
+}
+
+.card-btn-overlay {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0;
+  align-items: center;
+  background: var(--oj-core-brand-color, #0572ce);
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(5, 114, 206, 0.4);
+  overflow: hidden;
+}
+
+.card-btn-overlay oj-button {
+  --oj-button-borderless-chrome-text-color: #fff;
+  --oj-button-solid-chrome-text-color: #fff;
+  --oj-button-solid-chrome-bg-color: transparent;
+  --oj-button-solid-chrome-border-color: transparent;
+  --oj-button-outlined-chrome-text-color: #fff;
+  color: #fff;
+}
+
+.card-btn-overlay .oj-button-button {
+  color: #fff !important;
+}
+
+.card-btn-overlay .oj-button-text {
+  color: #fff !important;
+}
+
+.card-btn-overlay .oj-button-button {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.card-btn-overlay .oj-badge {
+  min-width: 28px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  font-weight: bold;
+}
+
+.card-btn-overlay .oj-badge {
+  min-width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+}
+
+.cart-price {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--oj-core-brand-color, #0572ce);
+  color: white;
+  border-radius: 10px;
+  font-size: 9px;
+  padding: 0 4px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: normal;
+  white-space: nowrap;
 }

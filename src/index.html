@@ -119,8 +119,11 @@
                                 <span slot="startIcon" class="oj-ux-ico-cart"></span>
                             </oj-button>
                             <!-- BADGE -->
-                            <div class="cart-badge"
-                                 data-bind="text: store.cartItems().length, visible: store.cartItems().length > 0">
+                            <div class="cart-badge" style="display:none"
+                                 data-bind="text: store.cartQty(), visible: store.cartQty() > 0">
+                            </div>
+                            <div class="cart-price" style="display:none"
+                                 data-bind="text: formatCLP(store.cartTotal()), visible: store.cartTotal() > 0">
                             </div>
                         </div>
                     </div>

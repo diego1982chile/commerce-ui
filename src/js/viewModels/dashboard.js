@@ -15,12 +15,6 @@ define([
 
         self.baseUrl = app.catalogServiceBaseUrl() + "products";
 
-        // ---------- Add to cart (UNICO) ----------
-        self.addToCart = function(product) {
-            self.store.addToCart(product);
-        };
-
-        // ---------- Model ----------
         const ProductModel = ojmodel.Model.extend({
             idAttribute: 'id'
         });
@@ -44,7 +38,6 @@ define([
         };
 
         collection.customURL = function(operation, collection, options) {
-
             const page = options.startIndex > 0
                 ? (options.startIndex / options.fetchSize)
                 : 0;
@@ -71,10 +64,6 @@ define([
                 currency: 'CLP',
                 minimumFractionDigits: 0
             }).format(value);
-        };
-
-        self.removeFromCart = function (product) {
-            self.store.cartItems.remove(product);
         };
     }
 
